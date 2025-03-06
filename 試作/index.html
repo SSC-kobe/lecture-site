@@ -3,13 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>講義のお知らせ</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script defer src="script.js"></script>
+    <title>お知らせ一覧</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .popup-btn {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h2>お知らせ一覧</h2>
     <input type="file" id="fileInput" accept=".xlsx">
-    <div id="newsContainer"></div>
+    <table id="noticeTable">
+        <thead>
+            <tr>
+                <th>カテゴリ</th>
+                <th>タイトル</th>
+                <th>詳細</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+                
+                const tbody = document.querySelector('#noticeTable tbody');
+                tbody.innerHTML = "";
+                
+                for (let i = 1; i < jsonData.length; i++) {
+                    const row = jsonData[i];
+                    const category = row[0]?.trim() || "";
+                    const title = row[1]?.trim() || "";
+                    const detail = row[3]?.trim() || "";
+                    
+                    if (!category && !title && !detail) continue; // 空白行を無視
+                    
+                    const tr = document.createElement("tr");
+                    tr.innerHTML = `
+                        <td>${category}</td>
+                        <td>${title}</td>
+                        <td><span class="popup-btn" onclick="alert('${detail}')">詳細を見る</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        });
+    </script>
 </body>
 </html>
