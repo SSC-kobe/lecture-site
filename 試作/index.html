@@ -8,6 +8,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            border: 1px solid #ddd;
         }
         th, td {
             border: 1px solid #ddd;
@@ -30,8 +31,9 @@
     <table id="noticeTable">
         <thead>
             <tr>
-                <th>カテゴリ</th>
+                <th>日付</th>
                 <th>タイトル</th>
+                <th>概要</th>
                 <th>詳細</th>
             </tr>
         </thead>
@@ -52,28 +54,39 @@
                 const sheet = workbook.Sheets[sheetName];
                 const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
                 
+                if (jsonData.length < 3) {
+                    alert('データが不足しています');
+                    return;
+                }
+                
                 const tbody = document.querySelector('#noticeTable tbody');
                 tbody.innerHTML = "";
                 
-                for (let i = 1; i < jsonData.length; i++) {
+                for (let i = 2; i < jsonData.length; i++) {
                     const row = jsonData[i];
-                    const category = row[0]?.trim() || "";
+                    const date = row[0]?.trim() || "";
                     const title = row[1]?.trim() || "";
+                    const summary = row[2]?.trim() || "";
                     const detail = row[3]?.trim() || "";
                     
-                    if (!category && !title && !detail) continue; // 空白行を無視
+                    if (!date && !title && !summary && !detail) continue; // 空白行を無視
                     
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
-                        <td>${category}</td>
+                        <td>${date}</td>
                         <td>${title}</td>
-                        <td><span class="popup-btn" onclick="alert('${detail}')">詳細を見る</span></td>
+                        <td>${summary}</td>
+                        <td><span class="popup-btn" onclick="showPopup('${detail}')">詳細を見る</span></td>
                     `;
                     tbody.appendChild(tr);
                 }
             };
             reader.readAsArrayBuffer(file);
         });
+
+        function showPopup(detail) {
+            alert(detail || "詳細情報がありません");
+        }
     </script>
 </body>
 </html>
