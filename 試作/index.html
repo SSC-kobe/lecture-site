@@ -63,12 +63,12 @@
                 
                 for (let i = 2; i < jsonData.length; i++) {
                     const row = jsonData[i];
-                    const updateDate = row[1]?.trim() || ""; // B列
-                    const target = row[2]?.trim() || ""; // C列
-                    const summary = row[3]?.trim() || ""; // D列
-                    const detail = row[4]?.trim() || ""; // E列
+                    const updateDate = row[1] || ""; // B列
+                    const target = row[2] || ""; // C列
+                    const summary = row[3] || ""; // D列
+                    const detail = row[4] || ""; // E列
                     
-                    if (!updateDate && !target && !summary && !detail) continue; // 空白行を無視
+                    if (!updateDate && !target && !summary) continue; // 空白行を無視
                     
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
@@ -83,7 +83,7 @@
         });
 
         function showPopup(detail) {
-            alert(detail && detail !== "" ? detail : "詳細情報がありません");
+            alert(detail && detail.trim() !== "" ? detail : "詳細情報がありません");
         }
     </script>
 </body>
