@@ -83,7 +83,7 @@
         });
 
         function showPopup(detail) {
-            alert(detail || "詳細情報がありません");
+            alert(detail && detail !== "" ? detail : "詳細情報がありません");
         }
     </script>
 </body>
