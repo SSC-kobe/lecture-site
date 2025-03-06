@@ -43,61 +43,15 @@
     <script>
         // 日付を「YYYY/MM/DD(曜日)」形式に変換する関数
         function formatDate(dateStr) {
-            const date = new Date(dateStr);
+            // 日付が数値（シリアル値）として読み込まれる場合に対応
+            let date;
+            if (typeof dateStr === 'number') {
+                date = new Date((dateStr - 25569) * 86400 * 1000); // Excelのシリアル値をJavaScriptのDate型に変換
+            } else {
+                date = new Date(dateStr); // 文字列の場合はそのままDateに変換
+            }
+
             if (isNaN(date.getTime())) return dateStr; // 無効な日付はそのまま返す
 
             const dayOfWeek = ["日", "月", "火", "水", "木", "金", "土"][date.getDay()];
-            const year = date.getFullYear();
-            const month = ("0" + (date.getMonth() + 1)).slice(-2);
-            const day = ("0" + date.getDate()).slice(-2);
-
-            return `${year}/${month}/${day}(${dayOfWeek})`;
-        }
-
-        document.getElementById('fileInput').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const data = new Uint8Array(e.target.result);
-                const workbook = XLSX.read(data, { type: 'array' });
-                const sheetName = workbook.SheetNames[0];
-                const sheet = workbook.Sheets[sheetName];
-                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
-
-                if (jsonData.length < 3) {
-                    alert('データが不足しています');
-                    return;
-                }
-
-                const tbody = document.querySelector('#noticeTable tbody');
-                tbody.innerHTML = "";
-
-                for (let i = 2; i < jsonData.length; i++) {
-                    const row = jsonData[i];
-                    const updateDate = formatDate(row[0] || ""); // B列（更新日）
-                    const target = row[1] || ""; // C列（対象）
-                    const summary = row[2] || ""; // D列（概要）
-                    const detail = row[3] || ""; // E列（詳細）
-
-                    if (!updateDate && !target && !summary) continue; // 空白行を無視
-
-                    const tr = document.createElement("tr");
-                    tr.innerHTML = `
-                        <td class="popup-btn" onclick="showPopup('${detail}')">${updateDate}</td>
-                        <td class="popup-btn" onclick="showPopup('${detail}')">${target}</td>
-                        <td class="popup-btn" onclick="showPopup('${detail}')">${summary}</td>
-                    `;
-                    tbody.appendChild(tr);
-                }
-            };
-            reader.readAsArrayBuffer(file);
-        });
-
-        function showPopup(detail) {
-            alert(detail && detail.trim() !== "" ? detail : "詳細情報がありません");
-        }
-    </script>
-</body>
-</html>
+            const year = date.getFull
