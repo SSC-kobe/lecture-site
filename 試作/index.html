@@ -31,10 +31,9 @@
     <table id="noticeTable">
         <thead>
             <tr>
-                <th>日付</th>
+                <th>更新日</th>
                 <th>対象</th>
                 <th>概要</th>
-                <th>詳細</th>
             </tr>
         </thead>
         <tbody></tbody>
@@ -64,19 +63,18 @@
                 
                 for (let i = 2; i < jsonData.length; i++) {
                     const row = jsonData[i];
-                    const date = row[0]?.trim() || "";
-                    const title = row[1]?.trim() || "";
-                    const summary = row[2]?.trim() || "";
-                    const detail = row[3]?.trim() || "";
+                    const updateDate = row[1]?.trim() || ""; // B列
+                    const target = row[2]?.trim() || ""; // C列
+                    const summary = row[3]?.trim() || ""; // D列
+                    const detail = row[4]?.trim() || ""; // E列
                     
-                    if (!date && !title && !summary && !detail) continue; // 空白行を無視
+                    if (!updateDate && !target && !summary && !detail) continue; // 空白行を無視
                     
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
-                        <td>${date}</td>
-                        <td>${title}</td>
-                        <td>${summary}</td>
-                        <td><span class="popup-btn" onclick="showPopup('${detail}')">詳細を見る</span></td>
+                        <td class="popup-btn" onclick="showPopup('${detail}')">${updateDate}</td>
+                        <td class="popup-btn" onclick="showPopup('${detail}')">${target}</td>
+                        <td class="popup-btn" onclick="showPopup('${detail}')">${summary}</td>
                     `;
                     tbody.appendChild(tr);
                 }
