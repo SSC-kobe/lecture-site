@@ -52,18 +52,18 @@
                 const sheetName = workbook.SheetNames[0];
                 const sheet = workbook.Sheets[sheetName];
                 const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
-                
-                if (jsonData.length < 3) {
+
+                if (jsonData.length < 2) {
                     alert('データが不足しています');
                     return;
                 }
-                
+
                 const tbody = document.querySelector('#noticeTable tbody');
                 tbody.innerHTML = "";
-                
+
                 // データを逆順にして、最下行を上に持ってくる
-                const reversedData = jsonData.slice(2).reverse();
-                
+                const reversedData = jsonData.slice(1).reverse();
+
                 reversedData.forEach(row => {
                     let updateDate = row[0] || ""; // B列
                     const target = row[1] || ""; // C列
@@ -71,18 +71,20 @@
                     const detail = row[3] || ""; // E列
                     
                     if (!updateDate && !target && !summary) return; // 空白行を無視
-                    
+
                     // 更新日の数値を日付形式（12/13(金) の形式）に変換
                     if (!isNaN(updateDate)) {
                         const dateObj = XLSX.SSF.parse_date_code(updateDate);
-                        updateDate = `${dateObj.m}/${dateObj.d}(${["日", "月", "火", "水", "木", "金", "土"][new Date(dateObj.y, dateObj.m - 1, dateObj.d).getDay()]})`;
+                        const date = new Date(dateObj.y, dateObj.m - 1, dateObj.d);
+                        const dayNames = ["日", "月", "火", "水", "木", "金", "土"];
+                        updateDate = `${dateObj.m}/${dateObj.d}(${dayNames[date.getDay()]})`;
                     }
-                    
+
                     const tr = document.createElement("tr");
                     tr.innerHTML = `
                         <td>${updateDate}</td>
                         <td>${target}</td>
-                        <td class="popup-btn" onclick="showPopup('${detail}')">${summary}</td>
+                        <td class="popup-btn" onclick="showPopup('${encodeURIComponent(detail)}')">${summary}</td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -91,7 +93,8 @@
         });
 
         function showPopup(detail) {
-            alert(detail && detail.trim() !== "" ? detail : "詳細情報がありません");
+            const decodedDetail = decodeURIComponent(detail);
+            alert(decodedDetail && decodedDetail.trim() !== "" ? decodedDetail : "詳細情報がありません");
         }
     </script>
 </body>
