@@ -55,7 +55,7 @@
                 const sheet = workbook.Sheets[sheetName];
                 const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
                 
-                if (jsonData.length < 3) {
+                if (jsonData.length < 2) {
                     alert('データが不足しています');
                     return;
                 }
@@ -64,13 +64,14 @@
                 tbody.innerHTML = "";
                 
                 // データを逆順にして、最下行を上に持ってくる
-                const reversedData = jsonData.slice(2).reverse();
+                const reversedData = jsonData.slice(1).reverse();
                 
                 reversedData.forEach(row => {
-                    let updateDate = row[0] || ""; // B列
-                    const target = row[1] || ""; // C列
-                    const summary = row[2] || ""; // D列
-                    const detail = row[3] || ""; // E列
+                    console.log(row); // デバッグ用
+                    let updateDate = row[1] || ""; // B列
+                    const target = row[2] || ""; // C列
+                    const summary = row[3] || ""; // D列
+                    const detail = row[4] || ""; // E列
                     
                     if (!updateDate && !target && !summary) return; // 空白行を無視
                     
@@ -84,7 +85,7 @@
                     tr.innerHTML = `
                         <td>${updateDate}</td>
                         <td>${target}</td>
-                        <td class="popup-btn" onclick="showPopup('${detail}')">${summary}</td>
+                        <td class="popup-btn" onclick="showPopup('${detail.replace(/\n/g, '<br>')}')">${summary}</td>
                     `;
                     tbody.appendChild(tr);
                 });
