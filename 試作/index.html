@@ -68,10 +68,10 @@
                 
                 reversedData.forEach(row => {
                     console.log(row); // デバッグ用
-                    let updateDate = row[1] || ""; // B列
-                    const target = row[2] || ""; // C列
-                    const summary = row[3] || ""; // D列
-                    const detail = row[4] || ""; // E列
+                    let updateDate = row[0] || ""; // B列
+                    const target = row[1] || ""; // C列
+                    const summary = row[2] || ""; // D列
+                    const detail = row[3] || ""; // E列
                     
                     if (!updateDate && !target && !summary) return; // 空白行を無視
                     
