@@ -85,7 +85,7 @@
                     tr.innerHTML = `
                         <td>${updateDate}</td>
                         <td>${target}</td>
-                        <td class="popup-btn" onclick="showPopup('${detail.replace(/'/g, "&#39;").replace(/\n/g, '<br>')}')">${summary}</td>
+                        <td class="popup-btn" onclick="showPopup(this)" data-detail="${encodeURIComponent(detail)}">${summary}</td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -93,9 +93,9 @@
             reader.readAsArrayBuffer(file);
         });
 
-        function showPopup(detail) {
-            const decodedDetail = detail.replace(/&#39;/g, "'").replace(/<br>/g, "\n");
-            alert(decodedDetail.trim() !== "" ? decodedDetail : "詳細情報がありません");
+        function showPopup(element) {
+            const detail = decodeURIComponent(element.getAttribute("data-detail"));
+            alert(detail.trim() !== "" ? detail : "詳細情報がありません");
         }
     </script>
 </body>
