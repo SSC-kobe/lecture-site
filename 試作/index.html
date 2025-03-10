@@ -85,7 +85,7 @@
                     tr.innerHTML = `
                         <td>${updateDate}</td>
                         <td>${target}</td>
-                        <td class="popup-btn" onclick="showPopup('${detail.replace(/\n/g, '<br>')}')">${summary}</td>
+                        <td class="popup-btn" onclick="showPopup('${detail.replace(/'/g, "&#39;").replace(/\n/g, '<br>')}')">${summary}</td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -94,7 +94,8 @@
         });
 
         function showPopup(detail) {
-            alert(detail && detail.trim() !== "" ? detail : "詳細情報がありません");
+            const decodedDetail = detail.replace(/&#39;/g, "'").replace(/<br>/g, "\n");
+            alert(decodedDetail.trim() !== "" ? decodedDetail : "詳細情報がありません");
         }
     </script>
 </body>
