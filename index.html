@@ -68,4 +68,51 @@
     <a href="schedule.html">スケジュール</a>
     <a href="submission.html">提出</a>
     <a href="handout.html">資料</a>
-    <a href="attendance.html">出欠</
+    <a href="attendance.html">出欠</a>
+    <a href="about.html">紹介</a>
+</nav>
+
+<div class="container">
+    <div class="section">
+        <h2>緊急のお知らせ</h2>
+        <div class="section-content" id="urgent-news">
+            読み込み中...
+        </div>
+    </div>
+</div>
+
+<script>
+    // news.html から「緊急のお知らせ」を取得して表示
+    async function fetchUrgentNews() {
+        try {
+            const response = await fetch("news.json"); // news.json にお知らせデータを格納
+            const newsData = await response.json();
+
+            const urgentNews = newsData.filter(item => item.category === "緊急");
+            
+            const urgentNewsContainer = document.getElementById("urgent-news");
+            urgentNewsContainer.innerHTML = ""; // 一度クリア
+            
+            if (urgentNews.length === 0) {
+                urgentNewsContainer.innerHTML = "緊急のお知らせはありません。";
+                return;
+            }
+
+            urgentNews.forEach(news => {
+                const newsItem = document.createElement("p");
+                newsItem.innerHTML = `<strong>${news.date}</strong> - ${news.title}`;
+                urgentNewsContainer.appendChild(newsItem);
+            });
+
+        } catch (error) {
+            console.error("エラー:", error);
+            document.getElementById("urgent-news").innerHTML = "お知らせを取得できませんでした。";
+        }
+    }
+
+    // ページ読み込み時に緊急のお知らせを取得
+    fetchUrgentNews();
+</script>
+
+</body>
+</html>
