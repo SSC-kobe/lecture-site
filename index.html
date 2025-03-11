@@ -82,7 +82,7 @@
 </div>
 
 <script>
-   async function fetchUrgentNews() {
+  async function fetchUrgentNews() {
     try {
         // localStorage からデータを取得
         const savedNews = localStorage.getItem("newsData");
@@ -123,6 +123,7 @@ function displayUrgentNews(newsData) {
 
 // ページ読み込み時に緊急のお知らせを取得
 fetchUrgentNews();
+
 
 </script>
 
