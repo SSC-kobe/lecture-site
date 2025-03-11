@@ -1,5 +1,3 @@
-console.log("スクリプトが読み込まれました！");
-
 document.getElementById('fileInput').addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -11,6 +9,8 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+
+        console.log("エクセルデータを取得:", jsonData); // エクセルデータの確認
 
         if (jsonData.length < 2) {
             alert('データが不足しています');
@@ -42,55 +42,10 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
             });
         });
 
-        // `localStorage` にデータを保存（ページ更新後も保持）
+        console.log("localStorage に保存するデータ:", JSON.stringify(newsArray)); // 保存前に確認
         localStorage.setItem("newsData", JSON.stringify(newsArray));
-
-        // `news.json` を手動で更新
-        saveNewsJSON(newsArray);
 
         alert("お知らせを保存しました！（ページを更新してもデータは保持されます）");
     };
     reader.readAsArrayBuffer(file);
 });
-
-// `news.json` を手動で更新する関数
-function saveNewsJSON(newsArray) {
-    fetch('/news.json', {
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newsArray)
-    })
-    .then(response => response.json())
-    .then(data => console.log("news.json に保存完了:", data))
-    .catch(error => console.error("エラー:", error));
-}
-
-// ページ読み込み時に `localStorage` からデータを復元
-window.onload = function() {
-    const savedNews = localStorage.getItem("newsData");
-    if (savedNews) {
-        displayNews(JSON.parse(savedNews));
-    }
-};
-
-// `news.json` のデータを表示
-function displayNews(newsArray) {
-    const tbody = document.querySelector('#noticeTable tbody');
-    tbody.innerHTML = "";
-
-    newsArray.forEach(news => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td>${news.date}</td>
-            <td>${news.category}</td>
-            <td class="popup-btn" onclick="showPopup(this)" data-detail="${encodeURIComponent(news.detail)}">${news.title}</td>
-        `;
-        tbody.appendChild(tr);
-    });
-}
-
-// ポップアップの表示
-function showPopup(element) {
-    const detail = decodeURIComponent(element.getAttribute("data-detail"));
-    alert(detail.trim() !== "" ? detail : "詳細情報がありません");
-}
