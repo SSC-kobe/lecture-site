@@ -82,36 +82,48 @@
 </div>
 
 <script>
-    // news.html から「緊急のお知らせ」を取得して表示
-    async function fetchUrgentNews() {
-        try {
-            const response = await fetch("news.json"); // news.json にお知らせデータを格納
-            const newsData = await response.json();
-
-            const urgentNews = newsData.filter(item => item.category === "緊急");
-            
-            const urgentNewsContainer = document.getElementById("urgent-news");
-            urgentNewsContainer.innerHTML = ""; // 一度クリア
-            
-            if (urgentNews.length === 0) {
-                urgentNewsContainer.innerHTML = "緊急のお知らせはありません。";
-                return;
-            }
-
-            urgentNews.forEach(news => {
-                const newsItem = document.createElement("p");
-                newsItem.innerHTML = `<strong>${news.date}</strong> - ${news.title}`;
-                urgentNewsContainer.appendChild(newsItem);
-            });
-
-        } catch (error) {
-            console.error("エラー:", error);
-            document.getElementById("urgent-news").innerHTML = "お知らせを取得できませんでした。";
+   async function fetchUrgentNews() {
+    try {
+        // localStorage からデータを取得
+        const savedNews = localStorage.getItem("newsData");
+        if (savedNews) {
+            console.log("ローカルのデータを読み込んでいます");
+            displayUrgentNews(JSON.parse(savedNews));
+            return;
         }
+
+        // localStorage にデータがない場合は `news.json` を読み込む
+        const response = await fetch("news.json");
+        const newsData = await response.json();
+        displayUrgentNews(newsData);
+
+    } catch (error) {
+        console.error("エラー:", error);
+        document.getElementById("urgent-news").innerHTML = "お知らせを取得できませんでした。";
+    }
+}
+
+function displayUrgentNews(newsData) {
+    const urgentNewsContainer = document.getElementById("urgent-news");
+    urgentNewsContainer.innerHTML = ""; 
+
+    const urgentNews = newsData.filter(item => item.category === "緊急");
+    
+    if (urgentNews.length === 0) {
+        urgentNewsContainer.innerHTML = "緊急のお知らせはありません。";
+        return;
     }
 
-    // ページ読み込み時に緊急のお知らせを取得
-    fetchUrgentNews();
+    urgentNews.forEach(news => {
+        const newsItem = document.createElement("p");
+        newsItem.innerHTML = `<strong>${news.date}</strong> - ${news.title}`;
+        urgentNewsContainer.appendChild(newsItem);
+    });
+}
+
+// ページ読み込み時に緊急のお知らせを取得
+fetchUrgentNews();
+
 </script>
 
 </body>

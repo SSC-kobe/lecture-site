@@ -40,18 +40,33 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
             });
         });
 
-        // `news.json` の代わりに localStorage に保存
+        // `localStorage` にデータを保存（ページ更新後も保持）
         localStorage.setItem("newsData", JSON.stringify(newsArray));
+
+        // `news.json` を手動で更新
+        saveNewsJSON(newsArray);
+
         alert("お知らせを保存しました！（ページを更新してもデータは保持されます）");
     };
     reader.readAsArrayBuffer(file);
 });
 
+// `news.json` を手動で更新する関数
+function saveNewsJSON(newsArray) {
+    fetch('/news.json', {
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newsArray)
+    })
+    .then(response => response.json())
+    .then(data => console.log("news.json に保存完了:", data))
+    .catch(error => console.error("エラー:", error));
+}
+
 // ページ読み込み時に `localStorage` からデータを復元
 window.onload = function() {
     const savedNews = localStorage.getItem("newsData");
     if (savedNews) {
-        console.log("ローカルに保存されたデータを読み込みます");
         displayNews(JSON.parse(savedNews));
     }
 };
