@@ -7,11 +7,10 @@ document.addEventListener("DOMContentLoaded", function () {
         newsData = JSON.parse(newsData);
         console.log("LocalStorage からデータを取得:", newsData);
     } else {
-        console.log("LocalStorage にデータがありません。news.json を取得します。");
+        console.log("LocalStorage にデータがないため、news.json を取得");
         fetchNewsData();
     }
 
-    // 緊急のお知らせ欄を更新
     updateEmergencyNews();
 
     // エクセルアップロード処理
@@ -40,7 +39,6 @@ function updateEmergencyNews() {
         newsData = JSON.parse(newsData);
         const emergencyNews = document.getElementById("emergencyNews");
 
-        // 「緊急」のお知らせをフィルタリング
         const urgentNews = newsData.filter(item => item[1] === "緊急");
 
         if (urgentNews.length > 0) {
@@ -61,16 +59,13 @@ function handleFileUpload(event) {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: "array" });
 
-        // シート名を取得（最初のシートを使う）
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
 
-        // シートのデータをJSONに変換
         const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
         console.log("エクセルデータ（配列）:", jsonData);
 
-        // 必要な範囲（B列～E列）を抽出
         const extractedData = jsonData.slice(1).map(row => [row[1], row[2], row[3], row[4]]);
         
         console.log("抽出データ:", extractedData);
@@ -78,25 +73,10 @@ function handleFileUpload(event) {
         // データを localStorage に保存
         localStorage.setItem("newsData", JSON.stringify(extractedData));
 
-        // news.json に保存（仮想的に）
-        saveNewsData(extractedData);
+        console.log("localStorage にデータを保存:", localStorage.getItem("newsData"));
 
-        // ページを更新
         updateEmergencyNews();
     };
 
     reader.readAsArrayBuffer(file);
-}
-
-// news.json にデータを保存する関数（仮想的な処理）
-function saveNewsData(data) {
-    fetch("news.json", {
-        method: "POST", 
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-    })
-    .then(response => console.log("news.json に保存:", response))
-    .catch(error => console.error("news.json の保存エラー:", error));
 }
