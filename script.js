@@ -1,5 +1,17 @@
 console.log("スクリプトが読み込まれました！");
 
+// **ページ読み込み時に localStorage からデータを取得**
+document.addEventListener("DOMContentLoaded", function() {
+    const storedNews = localStorage.getItem("newsData");
+    if (storedNews) {
+        console.log("localStorage からデータを読み込み:", storedNews);
+        displayNews(JSON.parse(storedNews));
+    } else {
+        console.log("localStorage にデータがありません。");
+    }
+});
+
+// **エクセルファイルのアップロード処理**
 document.getElementById('fileInput').addEventListener('change', function(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -23,4 +35,13 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
         const reversedData = jsonData.slice(1).reverse();
 
         reversedData.forEach(row => {
-            let updateDate
+            let updateDate = row[0];
+            if (typeof updateDate === "number") {
+                updateDate = new Date((updateDate - 25569) * 86400 * 1000).toISOString().split('T')[0];
+            }
+
+            const newsItem = {
+                date: updateDate,
+                category: row[1] || "",
+                title: row[2] || "",
+                details: row[3]
