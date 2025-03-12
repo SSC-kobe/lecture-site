@@ -43,6 +43,10 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
         });
 
         console.log("localStorage に保存するデータ:", JSON.stringify(newsArray)); // 保存前に確認
+console.log("保存するデータ:", JSON.stringify(newsArray, null, 2));
+localStorage.setItem("newsData", JSON.stringify(newsArray));
+console.log("データを localStorage に保存しました！");
+
         localStorage.setItem("newsData", JSON.stringify(newsArray));
 
         alert("お知らせを保存しました！（ページを更新してもデータは保持されます）");
