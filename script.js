@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // ✅ GitHub Pages の news.json を取得
 function fetchNewsData() {
-    fetch("https://your-username.github.io/lecture-site/news.json")  // ← ユーザー名を変更
+    fetch("https://SSC-kobe.github.io/lecture-site/news.json")  // ← ユーザー名を変更
         .then(response => {
             if (!response.ok) {
                 throw new Error("news.json の取得に失敗しました");
