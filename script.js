@@ -1,18 +1,8 @@
 console.log("スクリプトが読み込まれました！");
 
-// ✅ ページ読み込み時に news.json または localStorage からデータを取得
+// ✅ ページ読み込み時に news.json を取得して表示
 document.addEventListener("DOMContentLoaded", function () {
-    const storedNews = localStorage.getItem("newsData");
-
-    if (storedNews) {
-        console.log("LocalStorage からデータを取得:", storedNews);
-        displayNews(JSON.parse(storedNews));
-    } else {
-        console.log("LocalStorage にデータがないため、news.json を取得");
-        fetchNewsData();
-    }
-
-    updateEmergencyNews();
+    fetchNewsData();
 });
 
 // ✅ GitHub Pages の news.json を取得
@@ -26,8 +16,8 @@ function fetchNewsData() {
         })
         .then(data => {
             console.log("news.json のデータを取得:", data);
-            localStorage.setItem("newsData", JSON.stringify(data));
             displayNews(data);
+            updateEmergencyNews(data);
         })
         .catch(error => {
             console.error("news.json の取得エラー:", error);
@@ -52,20 +42,16 @@ function displayNews(newsData) {
 }
 
 // ✅ 緊急のお知らせを更新
-function updateEmergencyNews() {
-    let newsData = localStorage.getItem("newsData");
+function updateEmergencyNews(newsData) {
+    const emergencyNews = document.getElementById("emergencyNews");
 
-    if (newsData) {
-        newsData = JSON.parse(newsData);
-        const emergencyNews = document.getElementById("emergencyNews");
+    // 「緊急」のお知らせをフィルタリング
+    const urgentNews = newsData.filter(item => item.category === "緊急");
 
-        const urgentNews = newsData.filter(item => item.category === "緊急");
-
-        if (urgentNews.length > 0) {
-            emergencyNews.innerHTML = `<strong>${urgentNews[0].title}</strong><br>${urgentNews[0].detail}`;
-        } else {
-            emergencyNews.innerHTML = "現在、緊急のお知らせはありません。";
-        }
+    if (urgentNews.length > 0) {
+        emergencyNews.innerHTML = `<strong>${urgentNews[0].title}</strong><br>${urgentNews[0].detail}`;
+    } else {
+        emergencyNews.innerHTML = "現在、緊急のお知らせはありません。";
     }
 }
 
@@ -114,15 +100,25 @@ document.getElementById('fileInput').addEventListener('change', function(event) 
             });
         });
 
-        console.log("localStorage に保存するデータ:", JSON.stringify(newsArray, null, 2));
-        localStorage.setItem("newsData", JSON.stringify(newsArray));
+        console.log("新しい news.json データ:", JSON.stringify(newsArray, null, 2));
 
-        alert("お知らせを保存しました！（ページを更新してもデータは保持されます）");
-        displayNews(newsArray);
-        updateEmergencyNews();
+        // GitHub Pages ではサーバーに直接保存できないため、ユーザーにダウンロードさせる
+        downloadNewsJSON(newsArray);
     };
     reader.readAsArrayBuffer(file);
 });
+
+// ✅ news.json をダウンロードする関数（GitHub Pages では直接保存不可のため）
+function downloadNewsJSON(data) {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "news.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
 
 // ✅ ポップアップの表示
 function showPopup(element) {
