@@ -4,130 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>トップページ</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #F5F5F5;
-        }
-        header {
-            background-color: #B0CA98;
-            padding: 15px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-        }
-        nav {
-            background-color: #5D7D40;
-            padding: 10px;
-            text-align: center;
-        }
-        nav a {
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            margin: 0 10px;
-            display: inline-block;
-        }
-        nav a:hover {
-            background-color: #3B5D27;
-            border-radius: 5px;
-        }
-        .container {
-            width: 90%;
-            max-width: 1000px;
-            margin: 20px auto;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-        .section {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 2px solid #5D7D40;
-        }
-        .section h2 {
-            margin: 0;
-            background-color: #B0CA98;
-            padding: 10px;
-            color: white;
-        }
-        .section-content {
-            padding: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <h1>講義サイト トップページ</h1>
 
-<header>講義のお知らせサイト</header>
-
-<nav>
-    <a href="news.html">お知らせ</a>
-    <a href="schedule.html">スケジュール</a>
-    <a href="submission.html">提出</a>
-    <a href="handout.html">資料</a>
-    <a href="attendance.html">出欠</a>
-    <a href="about.html">紹介</a>
-</nav>
-
-<div class="container">
-    <div class="section">
-        <h2>緊急のお知らせ</h2>
-        <div class="section-content" id="urgent-news">
-            読み込み中...
-        </div>
+    <!-- 緊急のお知らせ入力欄 -->
+    <h2>緊急のお知らせ</h2>
+    <div id="emergencyInputArea">
+        <textarea id="emergencyInput" placeholder="緊急のお知らせを入力してください"></textarea>
+        <button onclick="saveEmergency()">保存</button>
     </div>
-</div>
 
-<script>
-  async function fetchUrgentNews() {
-    try {
-        // localStorage からデータを取得
-        const savedNews = localStorage.getItem("newsData");
-        if (savedNews) {
-            console.log("ローカルのデータを読み込んでいます");
-            displayUrgentNews(JSON.parse(savedNews));
-            return;
-        }
+    <!-- 緊急のお知らせ表示欄 -->
+    <div id="emergencyDisplayArea">
+        <p id="emergencyNews">現在、緊急のお知らせはありません。</p>
+    </div>
 
-        // localStorage にデータがない場合は `news.json` を読み込む
-        const response = await fetch("news.json");
-        const newsData = await response.json();
-        displayUrgentNews(newsData);
-
-    } catch (error) {
-        console.error("エラー:", error);
-        document.getElementById("urgent-news").innerHTML = "お知らせを取得できませんでした。";
-    }
-}
-
-function displayUrgentNews(newsData) {
-    const urgentNewsContainer = document.getElementById("urgent-news");
-    urgentNewsContainer.innerHTML = ""; 
-
-    const urgentNews = newsData.filter(item => item.category === "緊急");
-    
-    if (urgentNews.length === 0) {
-        urgentNewsContainer.innerHTML = "緊急のお知らせはありません。";
-        return;
-    }
-
-    urgentNews.forEach(news => {
-        const newsItem = document.createElement("p");
-        newsItem.innerHTML = `<strong>${news.date}</strong> - ${news.title}`;
-        urgentNewsContainer.appendChild(newsItem);
-    });
-}
-
-// ページ読み込み時に緊急のお知らせを取得
-fetchUrgentNews();
-
-
-<script src="script.js">
-</script>
-
-
+    <script src="script.js"></script>
 </body>
 </html>
