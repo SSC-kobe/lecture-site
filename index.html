@@ -7,16 +7,28 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header>
+        <!-- ✅ ページ移動用のナビゲーションバー -->
+        <nav>
+            <a href="index.html">トップページ</a>
+            <a href="news.html">お知らせ一覧</a>
+            <a href="schedule.html">スケジュール</a>
+            <a href="submission.html">提出物</a>
+            <a href="handout.html">講義資料</a>
+            <a href="attendance.html">出欠確認</a>
+        </nav>
+    </header>
+
     <h1>講義サイト トップページ</h1>
 
-    <!-- 緊急のお知らせ入力欄 -->
+    <!-- ✅ 緊急のお知らせ入力欄 -->
     <h2>緊急のお知らせ</h2>
     <div id="emergencyInputArea">
         <textarea id="emergencyInput" placeholder="緊急のお知らせを入力してください"></textarea>
         <button onclick="saveEmergency()">保存</button>
     </div>
 
-    <!-- 緊急のお知らせ表示欄 -->
+    <!-- ✅ 緊急のお知らせ表示欄 -->
     <div id="emergencyDisplayArea">
         <p id="emergencyNews">現在、緊急のお知らせはありません。</p>
     </div>

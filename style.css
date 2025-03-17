@@ -3,6 +3,23 @@ body {
     margin: 20px;
 }
 
+nav {
+    background-color: #5D7D40;
+    padding: 10px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    margin: 0 10px;
+}
+
+nav a:hover {
+    background-color: #B0CA98;
+}
+
 textarea {
     width: 100%;
     height: 100px;
