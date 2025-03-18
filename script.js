@@ -35,7 +35,7 @@ document.getElementById('fileInput').addEventListener('change', async function(e
 
 // ✅ GitHub API を使って news.json をリポジトリにアップロード
 async function uploadToGitHub(newsData) {
-    const token = "process.env.GITHUB_TOKEN"; // 🔹 Netlify 環境変数を使う場合は process.env.GITHUB_TOKEN
+    const token = "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"; // 🔹 Netlify 環境変数を使う場合は process.env.GITHUB_TOKEN
     const owner = "SSC-kobe"; // 🔹 GitHub ユーザー名
     const repo = "lecture-site"; // 🔹 リポジトリ名
     const path = "news.json"; // 🔹 アップロードするファイルのパス
